@@ -11,9 +11,15 @@ build:
 
 # Serve the blog locally for preview
 serve: build
-    @echo "Starting local server at http://localhost:8000"
-    @echo "Press Ctrl+C to stop"
-    cd public && python -m http.server 8000
+    #!/usr/bin/env bash
+    cd public
+    # Create symlink for local development (allows /blog/ paths to work)
+    ln -sfn . blog
+    echo "Starting local server at http://localhost:8000/blog/"
+    echo "Visit: http://localhost:8000/blog/"
+    echo "Press Ctrl+C to stop"
+    echo ""
+    python -m http.server 8000
 
 # Clean generated files
 clean:
@@ -98,7 +104,7 @@ validate:
 
 # Open the blog in default browser (after serving)
 open: serve
-    xdg-open http://localhost:8000
+    xdg-open http://localhost:8000/blog/
 
 # Deploy to GitHub Pages (via git push, triggers Actions)
 deploy: build
