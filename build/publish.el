@@ -46,7 +46,7 @@
   <a href=\"/blog/archive.html\">Archive</a>
   <a href=\"/blog/rss.xml\">RSS</a>
 </nav>
-<header>
+<header class=\"site-header\">
   <h1><a href=\"/blog/index.html\">Liminal Desiderata</a></h1>
   <p>Technical essays and personal philosophy at the thresholds</p>
 </header>")
@@ -54,7 +54,7 @@
 ;; Page postamble - site footer
 (setq org-static-blog-page-postamble
       "<footer>
-  <p>Built with <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a></p>
+  <p>© 2026 Liminal Desiderata · Built with <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a></p>
 </footer>")
 
 ;; Custom post preamble for semantic HTML
