@@ -1,0 +1,36 @@
+#+TITLE: Contact
+#+DATE: <2026-02-11 Tue>
+
+* Get in Touch
+
+I'm interested in conversations about distributed systems, technical leadership, and the intersection of engineering and judgment.
+
+** Email
+
+The best way to reach me is via email: =your-email@example.com=
+
+(Replace with your actual email address)
+
+** Social
+
+- GitHub: [[https://github.com/eapolinario][github.com/eapolinario]]
+- LinkedIn: (Add your LinkedIn URL)
+- Twitter/X: (Add if you use it)
+
+** What I'm Interested In
+
+Good topics for conversation:
+- Distributed systems design and tradeoffs
+- Technical leadership and career development
+- Infrastructure and tooling decisions
+- Feedback on posts or ideas for future topics
+- Speaking opportunities or collaborations
+
+** What I'm Not Great At
+
+I receive more email than I can meaningfully respond to. I try to reply to thoughtful messages, but I may not be able to engage with:
+- General networking requests without context
+- Unsolicited promotions or marketing
+- Requests that don't relate to the blog's themes
+
+If you've read something here that resonated or challenged you, I'd genuinely like to hear about it.

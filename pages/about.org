@@ -1,0 +1,39 @@
+#+TITLE: About
+#+DATE: <2026-02-11 Tue>
+
+* About Liminal Desiderata
+
+This blog explores the thresholds between systems design and human judgment, between engineering tradeoffs and values, between what exists and what is desired but not yet realized.
+
+** What This Is
+
+/Liminal Desiderata/ is a collection of technical essays and personal philosophy aimed at experienced engineers, technical leaders, and reflective practitioners. The writing assumes familiarity with software systems, tradeoffs, and abstraction.
+
+Topics include:
+- Distributed systems and infrastructure design
+- Abstraction, invariants, and failure modes
+- Career decisions and technical leadership
+- Tooling, productivity, and taste
+- Decision-making under uncertainty
+- Values encoded in systems
+
+** The Name
+
+*Liminal* comes from the Latin /līmen/ ("threshold"). It refers to transitional or in-between states—periods where invariants are suspended and moments before structure hardens into decisions.
+
+*Desiderata* is the plural of /desideratum/—"things desired but not yet attained." These are articulated desired properties or outcomes that guide tradeoff discussions rather than end them.
+
+Together, *Liminal Desiderata* captures the named things we want while we are between stable states.
+
+** Approach
+
+The writing here:
+- Connects technical specifics to broader judgments
+- Names tradeoffs explicitly rather than hiding them
+- Assumes technical sophistication in readers
+- Optimizes for long-term intellectual coherence, not virality
+- Treats design and life decisions as structurally similar problems
+
+** About the Author
+
+Eduardo Apolinario is a software engineer interested in distributed systems, infrastructure, and the human aspects of technical decision-making.

@@ -21,10 +21,19 @@ This blog is built with [org-static-blog](https://github.com/bastibe/org-static-
 │   └── publish.el           # Emacs Lisp build script
 ├── posts/                   # Published org-mode posts (source)
 ├── drafts/                  # Unpublished drafts
+├── pages/                   # Static pages (About, Contact)
+│   ├── about.org
+│   └── contact.org
 ├── static/
 │   └── style.css           # Minimal semantic CSS
 ├── public/                 # Generated HTML (git-ignored)
+│   ├── index.html          # Homepage
+│   ├── blog.html           # Blog listing
+│   ├── about.html          # About page
+│   ├── contact.html        # Contact page
+│   └── archive.html        # Archive
 ├── context.md              # Blog vision and philosophy
+├── justfile                # Build automation
 └── README.md               # This file
 ```
 

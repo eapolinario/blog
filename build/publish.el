@@ -43,8 +43,9 @@
 (setq org-static-blog-page-preamble
       "<nav>
   <a href=\"/blog/index.html\">Home</a>
-  <a href=\"/blog/archive.html\">Archive</a>
-  <a href=\"/blog/rss.xml\">RSS</a>
+  <a href=\"/blog/blog.html\">Blog</a>
+  <a href=\"/blog/about.html\">About</a>
+  <a href=\"/blog/contact.html\">Contact</a>
 </nav>
 <header class=\"site-header\">
   <h1><a href=\"/blog/index.html\">Liminal Desiderata</a></h1>
@@ -96,9 +97,103 @@
 (setq org-static-blog-post-preamble #'liminal-desiderata-post-preamble)
 (setq org-static-blog-post-postamble #'liminal-desiderata-post-postamble)
 
+;; Copy static files to public directory
+(defun copy-static-files ()
+  "Copy static directory to public directory."
+  (let ((static-src "./static")
+        (static-dest "./public/static"))
+    (when (file-exists-p static-dest)
+      (delete-directory static-dest t))
+    (copy-directory static-src static-dest)))
+
+;; Export static pages (About, Contact, etc.)
+(defun export-static-pages ()
+  "Export static org pages to HTML."
+  (require 'ox-html)
+  (let ((org-html-head (concat "<link rel=\"stylesheet\" href=\"/blog/static/style.css\" type=\"text/css\"/>"))
+        (org-html-preamble org-static-blog-page-preamble)
+        (org-html-postamble org-static-blog-page-postamble)
+        (org-html-validation-link nil))
+    (dolist (file (directory-files "./pages" t "\\.org$"))
+      (let* ((output-file (concat "./public/" 
+                                  (file-name-base file) 
+                                  ".html")))
+        (with-temp-buffer
+          (insert-file-contents file)
+          (org-html-export-as-html)
+          (write-file output-file))
+        (message "Exported %s to %s" file output-file)))))
+
+;; Create a custom homepage
+(defun create-homepage ()
+  "Create a landing page that is different from the blog index."
+  (let ((homepage-content
+         "<!DOCTYPE html>
+<html lang=\"en\">
+<head>
+<meta charset=\"UTF-8\">
+<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+<link rel=\"stylesheet\" href=\"/blog/static/style.css\" type=\"text/css\"/>
+<title>Liminal Desiderata</title>
+</head>
+<body>
+<div id=\"preamble\" class=\"status\">
+<nav>
+  <a href=\"/blog/index.html\">Home</a>
+  <a href=\"/blog/blog.html\">Blog</a>
+  <a href=\"/blog/about.html\">About</a>
+  <a href=\"/blog/contact.html\">Contact</a>
+</nav>
+</div>
+<div id=\"content\" class=\"homepage\">
+<header class=\"hero\">
+  <h1>Liminal Desiderata</h1>
+  <p class=\"subtitle\">Technical essays and personal philosophy at the thresholds</p>
+</header>
+
+<section class=\"intro\">
+  <p>This blog explores the space between systems design and human judgment, between engineering tradeoffs and values, between what exists and what is desired but not yet realized.</p>
+  
+  <p>Written for experienced engineers, technical leaders, and reflective practitioners who are interested in distributed systems, infrastructure, career decisions, and the values encoded in the systems we build.</p>
+  
+  <div class=\"cta\">
+    <a href=\"/blog/blog.html\" class=\"button\">Read the Blog</a>
+    <a href=\"/blog/about.html\" class=\"button-secondary\">Learn More</a>
+  </div>
+</section>
+</div>
+<footer>
+  <p>© 2026 Liminal Desiderata · Built with <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a></p>
+</footer>
+</body>
+</html>"))
+    (with-temp-file "./public/index.html"
+      (insert homepage-content))
+    (message "Created custom homepage")))
+
+;; Rename org-static-blog's index to blog.html
+(defun rename-blog-index ()
+  "Rename the auto-generated index.html to blog.html."
+  (when (file-exists-p "./public/index.html")
+    (rename-file "./public/index.html" "./public/blog.html" t)
+    (message "Renamed index.html to blog.html")))
+
 ;; Publish the blog
 (org-static-blog-publish)
 
+;; Rename blog index
+(rename-blog-index)
+
+;; Create custom homepage
+(create-homepage)
+
+;; Export static pages
+(export-static-pages)
+
+;; Copy static files after publishing
+(copy-static-files)
+
 (message "Blog published successfully to %s" org-static-blog-publish-directory)
+(message "Static files copied to %s" "./public/static")
 
 ;;; publish.el ends here
