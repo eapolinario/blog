@@ -1,7 +1,7 @@
-;;; publish.el --- Build script for Liminal Desiderata blog -*- lexical-binding: t; -*-
+;;; publish.el --- Build script for Liminal Desiderata using org-publish -*- lexical-binding: t; -*-
 
 ;;; Commentary:
-;; This script configures and runs org-static-blog to generate the blog.
+;; This script uses org-publish (built into org-mode) to generate the blog.
 ;; Usage: emacs --batch -l build/publish.el
 
 ;;; Code:
@@ -17,30 +17,83 @@
 (unless package-archive-contents
   (package-refresh-contents))
 
-;; Install org-static-blog if not present
-(unless (package-installed-p 'org-static-blog)
-  (package-install 'org-static-blog))
+;; Install htmlize for syntax highlighting
+(unless (package-installed-p 'htmlize)
+  (package-install 'htmlize))
 
-(require 'org-static-blog)
+(require 'ox-html)
+(require 'htmlize)
 
-;; Core configuration
-(setq org-static-blog-publish-title "Liminal Desiderata")
-(setq org-static-blog-publish-url "https://eapolinario.github.io/blog/")
-(setq org-static-blog-publish-directory "./public/")
-(setq org-static-blog-posts-directory "./posts/")
-(setq org-static-blog-drafts-directory "./drafts/")
-(setq org-static-blog-enable-tags t)
-(setq org-static-blog-langcode "en")
+;; Force graphical mode in batch mode to get theme colors
+;; This creates an invisible frame so face definitions include colors
+(when noninteractive
+  (setq display-type 'color)
+  (when (and (getenv "DISPLAY")
+             (not (eq window-system 'x)))
+    ;; Try to initialize X window system
+    (ignore-errors
+      (x-initialize-window-system)
+      ;; Create a minimal invisible frame
+      (make-frame-on-display (getenv "DISPLAY") 
+                             '((visibility . nil)
+                               (width . 10)
+                               (height . 10))))))
 
-;; Page header - minimal, just CSS
-(setq org-static-blog-page-header
-      "<meta charset=\"UTF-8\">
-<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
-<link rel=\"stylesheet\" href=\"/blog/static/style.css\" type=\"text/css\"/>
-<link rel=\"alternate\" type=\"application/rss+xml\" href=\"/blog/rss.xml\" title=\"RSS feed for Liminal Desiderata\">")
+;; Load leuven theme for syntax highlighting (built-in light theme)
+(load-theme 'leuven t)
 
-;; Page preamble - simple header with navigation
-(setq org-static-blog-page-preamble
+;; Configure htmlize to generate CSS file from theme
+(setq org-html-htmlize-output-type 'css)  ;; Generate CSS classes
+(setq org-html-htmlize-font-prefix "org-")
+(setq org-src-fontify-natively t)
+
+;; Generate CSS file from htmlize with current theme
+(defun generate-htmlize-css ()
+  "Generate CSS file from htmlize based on current theme."
+  (require 'htmlize)
+  (let ((htmlbuf (with-temp-buffer
+                   (insert "def hello():\n")
+                   (insert "    \"\"\"Docstring\"\"\"\n")
+                   (insert "    return 'world'\n")
+                   (python-mode)
+                   (font-lock-ensure)
+                   (font-lock-fontify-buffer)
+                   (htmlize-buffer))))
+    (with-current-buffer htmlbuf
+      (goto-char (point-min))
+      (when (search-forward "<style type=\"text/css\">" nil t)
+        (let* ((start (point))
+               (end (progn (search-forward "</style>") (match-beginning 0)))
+               (css (buffer-substring-no-properties start end)))
+          (with-temp-file "./public/static/htmlize.css"
+            (insert css))
+          (message "Generated htmlize.css from theme"))))
+    (kill-buffer htmlbuf)))
+
+(generate-htmlize-css)
+
+;; Configure HTML export
+(setq org-html-doctype "html5")
+(setq org-html-html5-fancy t)
+(setq org-html-validation-link nil)
+(setq org-html-head-include-default-style nil)
+(setq org-html-head-include-scripts nil)
+
+;; Blog configuration
+(defvar blog-base-url "https://eapolinario.github.io/blog/")
+(defvar blog-title "Liminal Desiderata")
+(defvar blog-subtitle "Technical essays and personal philosophy at the thresholds")
+
+;; HTML head with CSS (with cache-busting timestamp)
+(setq org-html-head
+      (format "<link rel=\"stylesheet\" href=\"/blog/static/style.css?v=%s\" type=\"text/css\"/>
+<link rel=\"stylesheet\" href=\"/blog/static/htmlize.css?v=%s\" type=\"text/css\"/>
+<link rel=\"alternate\" type=\"application/rss+xml\" href=\"/blog/rss.xml\" title=\"RSS feed for Liminal Desiderata\">"
+              (format-time-string "%s")
+              (format-time-string "%s")))
+
+;; HTML preamble (navigation)
+(setq org-html-preamble
       "<div class=\"header\">
   <div class=\"sitelinks\">
     <a href=\"/blog/index.html\">Home</a>
@@ -53,149 +106,174 @@
   </div>
 </div>")
 
-;; Page postamble - simple footer
-(setq org-static-blog-page-postamble
-      "Created by <a href=\"https://github.com/bastibe/org-static-blog/\">Org Static Blog</a>")
+;; HTML postamble (footer)
+(setq org-html-postamble
+      "<div id=\"postamble\" class=\"status\">
+Created by <a href=\"https://orgmode.org\">Org Mode</a>
+</div>")
 
-;; Custom post preamble for semantic HTML
-(defun liminal-desiderata-post-preamble (post-filename)
-  "Generate semantic HTML preamble for POST-FILENAME."
-  (concat
-   "<article>\n"
-   "<header class=\"post-header\">\n"
-   "  <h2 class=\"post-title\">"
-   (org-static-blog-get-title post-filename)
-   "</h2>\n"
-   "  <div class=\"post-meta\">\n"
-   "    <time datetime=\""
-   (format-time-string "%Y-%m-%d" (org-static-blog-get-date post-filename))
-   "\">"
-   (format-time-string "%B %d, %Y" (org-static-blog-get-date post-filename))
-   "</time>\n"
-   (let ((tags (org-static-blog-get-tags post-filename)))
-     (if tags
-         (concat
-          "    <div class=\"post-tags\">\n"
-          (mapconcat
-           (lambda (tag)
-             (concat "<a href=\"/blog/tag_" (downcase tag) ".html\">" tag "</a>"))
-           tags
-           " ")
-          "\n    </div>\n")
-       ""))
-   "  </div>\n"
-   "</header>\n"
-   "<div class=\"post-content\">\n"))
+;; Define publishing projects
+(setq org-publish-project-alist
+      `(
+        ;; Blog posts
+        ("blog-posts"
+         :base-directory "./posts"
+         :base-extension "org"
+         :publishing-directory "./public/posts"
+         :recursive nil
+         :publishing-function org-html-publish-to-html
+         :with-author t
+         :with-creator nil
+         :with-date t
+         :with-toc t
+         :section-numbers nil
+         :time-stamp-file nil
+         :html-head ,org-html-head
+         :html-preamble ,org-html-preamble
+         :html-postamble ,org-html-postamble
+         :htmlized-source t)
 
-;; Custom post postamble for semantic HTML
-(defun liminal-desiderata-post-postamble (post-filename)
-  "Generate semantic HTML postamble for POST-FILENAME."
-  "</div>\n</article>\n")
+        ;; Static pages (about, contact)
+        ("blog-pages"
+         :base-directory "./pages"
+         :base-extension "org"
+         :publishing-directory "./public"
+         :recursive nil
+         :publishing-function org-html-publish-to-html
+         :with-author nil
+         :with-creator nil
+         :with-date nil
+         :with-toc nil
+         :section-numbers nil
+         :html-head ,org-html-head
+         :html-preamble ,org-html-preamble
+         :html-postamble ,org-html-postamble)
 
-;; Set custom functions
-(setq org-static-blog-post-preamble #'liminal-desiderata-post-preamble)
-(setq org-static-blog-post-postamble #'liminal-desiderata-post-postamble)
+        ;; Static assets (CSS, JS, images)
+        ("blog-static"
+         :base-directory "./static"
+         :base-extension "css\\|js\\|png\\|jpg\\|gif\\|svg\\|ico"
+         :publishing-directory "./public/static"
+         :recursive t
+         :publishing-function org-publish-attachment)
 
-;; Copy static files to public directory
-(defun copy-static-files ()
-  "Copy static directory to public directory."
-  (let ((static-src "./static")
-        (static-dest "./public/static"))
-    (when (file-exists-p static-dest)
-      (delete-directory static-dest t))
-    (copy-directory static-src static-dest)))
+        ;; Complete project
+        ("blog" :components ("blog-posts" "blog-pages" "blog-static"))))
 
-;; Export static pages (About, Contact, etc.)
-(defun export-static-pages ()
-  "Export static org pages to HTML."
-  (require 'ox-html)
-  (let ((org-html-head (concat "<link rel=\"stylesheet\" href=\"/blog/static/style.css\" type=\"text/css\"/>"))
-        (org-html-preamble org-static-blog-page-preamble)
-        (org-html-postamble org-static-blog-page-postamble)
-        (org-html-validation-link nil))
-    (dolist (file (directory-files "./pages" t "\\.org$"))
-      (let* ((output-file (concat "./public/" 
-                                  (file-name-base file) 
-                                  ".html")))
-        (with-temp-buffer
-          (insert-file-contents file)
-          (org-html-export-as-html)
-          (write-file output-file))
-        (message "Exported %s to %s" file output-file)))))
+;; Helper function to get all posts sorted by date
+(defun blog-get-posts ()
+  "Get all blog posts sorted by date (newest first)."
+  (let ((posts (directory-files "./posts" t "\\.org$")))
+    (sort posts
+          (lambda (a b)
+            (let ((date-a (blog-get-post-date a))
+                  (date-b (blog-get-post-date b)))
+              (time-less-p date-b date-a))))))
 
-;; Create a custom homepage
-(defun create-homepage ()
-  "Create a landing page that is different from the blog index."
-  (let ((homepage-content
-         "<!DOCTYPE html>
+(defun blog-get-post-date (file)
+  "Extract date from org file FILE."
+  (with-temp-buffer
+    (insert-file-contents file)
+    (goto-char (point-min))
+    (if (re-search-forward "^#\\+DATE: *<\\([^>]+\\)>" nil t)
+        (date-to-time (match-string 1))
+      (time-since 0))))
+
+(defun blog-get-post-title (file)
+  "Extract title from org file FILE."
+  (with-temp-buffer
+    (insert-file-contents file)
+    (goto-char (point-min))
+    (if (re-search-forward "^#\\+TITLE: *\\(.*\\)$" nil t)
+        (match-string 1)
+      (file-name-base file))))
+
+(defun blog-get-post-tags (file)
+  "Extract tags from org file FILE."
+  (with-temp-buffer
+    (insert-file-contents file)
+    (goto-char (point-min))
+    (if (re-search-forward "^#\\+FILETAGS: *\\(.*\\)$" nil t)
+        (split-string (match-string 1))
+      nil)))
+
+;; Generate blog index (list of posts)
+(defun blog-generate-index ()
+  "Generate blog index page."
+  (with-temp-file "./public/blog.html"
+    (insert "<!DOCTYPE html>
 <html lang=\"en\">
 <head>
 <meta charset=\"UTF-8\">
 <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
 <link rel=\"stylesheet\" href=\"/blog/static/style.css\" type=\"text/css\"/>
-<title>Liminal Desiderata</title>
+<title>" blog-title "</title>
 </head>
 <body>
-<div id=\"preamble\" class=\"status\">
-<div class=\"header\">
-  <div class=\"sitelinks\">
-    <a href=\"/blog/index.html\">Home</a>
-    |
-    <a href=\"/blog/blog.html\">All Posts</a>
-    |
-    <a href=\"/blog/about.html\">About</a>
-    |
-    <a href=\"/blog/contact.html\">Contact</a>
-  </div>
-</div>
-</div>
+<div id=\"preamble\" class=\"status\">")
+    (insert org-html-preamble)
+    (insert "</div>
+<div id=\"content\">
+<h1 class=\"title\">Recent Posts</h1>\n")
+    (dolist (post (blog-get-posts))
+      (let* ((title (blog-get-post-title post))
+             (date (blog-get-post-date post))
+             (tags (blog-get-post-tags post))
+             (filename (file-name-nondirectory post))
+             (html-file (concat "posts/" (file-name-sans-extension filename) ".html")))
+        (insert (format "<h2 class=\"post-title\"><a href=\"/blog/%s\">%s</a></h2>\n" html-file title))
+        (insert (format "<div class=\"post-date\">%s</div>\n" (format-time-string "%d %b %Y" date)))
+        (when tags
+          (insert "<div class=\"taglist\"><a href=\"/blog/tags.html\">Tags</a>: ")
+          (dolist (tag tags)
+            (insert (format "<a href=\"/blog/tag-%s.html\">%s</a> " tag tag)))
+          (insert "</div>\n"))))
+    (insert "</div>\n")
+    (insert org-html-postamble)
+    (insert "</body>\n</html>")))
+
+;; Generate homepage
+(defun blog-generate-homepage ()
+  "Generate custom homepage."
+  (with-temp-file "./public/index.html"
+    (insert "<!DOCTYPE html>
+<html lang=\"en\">
+<head>
+<meta charset=\"UTF-8\">
+<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+<link rel=\"stylesheet\" href=\"/blog/static/style.css\" type=\"text/css\"/>
+<title>" blog-title "</title>
+</head>
+<body>
+<div id=\"preamble\" class=\"status\">")
+    (insert org-html-preamble)
+    (insert "</div>
 <div id=\"content\" class=\"homepage\">
 <header class=\"hero\">
-  <h1>Liminal Desiderata</h1>
-  <p class=\"subtitle\">Technical essays and personal philosophy at the thresholds</p>
+  <h1>" blog-title "</h1>
+  <p class=\"subtitle\">" blog-subtitle "</p>
 </header>
-
 <section class=\"intro\">
   <p>This blog explores the space between systems design and human judgment, between engineering tradeoffs and values, between what exists and what is desired but not yet realized.</p>
-  
   <p>Written for experienced engineers, technical leaders, and reflective practitioners who are interested in distributed systems, infrastructure, career decisions, and the values encoded in the systems we build.</p>
-  
   <div class=\"cta\">
     <a href=\"/blog/blog.html\" class=\"button\">Read the Blog</a>
     <a href=\"/blog/about.html\" class=\"button-secondary\">Learn More</a>
   </div>
 </section>
-</div>
-<div id=\"postamble\" class=\"status\">Created by <a href=\"https://github.com/bastibe/org-static-blog/\">Org Static Blog</a></div>
-</body>
-</html>"))
-    (with-temp-file "./public/index.html"
-      (insert homepage-content))
-    (message "Created custom homepage")))
+</div>\n")
+    (insert org-html-postamble)
+    (insert "</body>\n</html>")))
 
-;; Rename org-static-blog's index to blog.html
-(defun rename-blog-index ()
-  "Rename the auto-generated index.html to blog.html."
-  (when (file-exists-p "./public/index.html")
-    (rename-file "./public/index.html" "./public/blog.html" t)
-    (message "Renamed index.html to blog.html")))
+;; Publish everything
+(message "Publishing blog...")
+(org-publish-all t)
 
-;; Publish the blog
-(org-static-blog-publish)
+;; Generate custom pages
+(message "Generating index pages...")
+(blog-generate-index)
+(blog-generate-homepage)
 
-;; Rename blog index
-(rename-blog-index)
-
-;; Create custom homepage
-(create-homepage)
-
-;; Export static pages
-(export-static-pages)
-
-;; Copy static files after publishing
-(copy-static-files)
-
-(message "Blog published successfully to %s" org-static-blog-publish-directory)
-(message "Static files copied to %s" "./public/static")
+(message "Blog published successfully!")
 
 ;;; publish.el ends here

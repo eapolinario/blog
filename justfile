@@ -7,7 +7,10 @@ default:
 
 # Build the blog (generate HTML from org files)
 build:
-    emacs --batch -l build/publish.el
+    #!/usr/bin/env bash
+    # Use GUI Emacs in daemon mode to get theme colors
+    export DISPLAY="${DISPLAY:-:0}"
+    emacs --eval "(progn (load-file \"build/publish.el\") (kill-emacs))" 2>/dev/null
 
 # Serve the blog locally for preview
 serve: build
