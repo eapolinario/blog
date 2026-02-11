@@ -1,0 +1,57 @@
+#+TITLE: Example Post: On Thresholds
+#+DATE: <2026-02-11 Tue>
+#+FILETAGS: meta infrastructure
+#+DESCRIPTION: An example post demonstrating the structure and philosophy of Liminal Desiderata
+
+* Introduction
+
+This is an example post for /Liminal Desiderata/. It demonstrates the structure of a typical essay: org-mode source files that transform into clean, semantic HTML.
+
+The blog lives at thresholds—between what exists and what is desired but not yet realized.
+
+* Writing in Org-Mode
+
+Posts are written in [[https://orgmode.org/][org-mode]], a powerful markup language native to Emacs. The benefits:
+
+- *Plain text* that remains readable in any editor
+- *Structural editing* with outlining and folding
+- *Export flexibility* to HTML, PDF, and other formats
+- *Literate programming* support for code examples
+
+This aligns with the blog's philosophy: clarity over cleverness, durability over trends.
+
+* Example Code Block
+
+Here's a simple example in Python:
+
+#+BEGIN_SRC python
+def threshold_state(system):
+    """Detect if a system is in a liminal state."""
+    if not system.has_stable_invariants():
+        return "liminal"
+    return "stable"
+#+END_SRC
+
+Code blocks render with syntax highlighting and minimal styling.
+
+* Lists and Structure
+
+Things to consider when writing:
+
+1. Assume technical sophistication in the reader
+2. Name tradeoffs explicitly rather than hiding them
+3. Connect technical specifics to broader judgments
+4. Avoid beginner explanations unless explicitly relevant
+
+Bullet points for desiderata:
+
+- Clarity
+- Precision
+- Intellectual honesty
+- Long-term coherence
+
+* Conclusion
+
+This example post demonstrates the basic structure. Real posts will explore distributed systems, abstraction, career decisions, and other topics at the intersection of technical design and human judgment.
+
+The goal is durable thinking, not hot takes.
