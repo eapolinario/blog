@@ -39,24 +39,23 @@
 <link rel=\"stylesheet\" href=\"/blog/static/style.css\" type=\"text/css\"/>
 <link rel=\"alternate\" type=\"application/rss+xml\" href=\"/blog/rss.xml\" title=\"RSS feed for Liminal Desiderata\">")
 
-;; Page preamble - site header and navigation
+;; Page preamble - simple header with navigation
 (setq org-static-blog-page-preamble
-      "<nav>
-  <a href=\"/blog/index.html\">Home</a>
-  <a href=\"/blog/blog.html\">Blog</a>
-  <a href=\"/blog/about.html\">About</a>
-  <a href=\"/blog/contact.html\">Contact</a>
-</nav>
-<header class=\"site-header\">
-  <h1><a href=\"/blog/index.html\">Liminal Desiderata</a></h1>
-  <p>Technical essays and personal philosophy at the thresholds</p>
-</header>")
+      "<div class=\"header\">
+  <div class=\"sitelinks\">
+    <a href=\"/blog/index.html\">Home</a>
+    |
+    <a href=\"/blog/blog.html\">All Posts</a>
+    |
+    <a href=\"/blog/about.html\">About</a>
+    |
+    <a href=\"/blog/contact.html\">Contact</a>
+  </div>
+</div>")
 
-;; Page postamble - site footer
+;; Page postamble - simple footer
 (setq org-static-blog-page-postamble
-      "<footer>
-  <p>© 2026 Liminal Desiderata · Built with <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a></p>
-</footer>")
+      "Created by <a href=\"https://github.com/bastibe/org-static-blog/\">Org Static Blog</a>")
 
 ;; Custom post preamble for semantic HTML
 (defun liminal-desiderata-post-preamble (post-filename)
@@ -138,12 +137,17 @@
 </head>
 <body>
 <div id=\"preamble\" class=\"status\">
-<nav>
-  <a href=\"/blog/index.html\">Home</a>
-  <a href=\"/blog/blog.html\">Blog</a>
-  <a href=\"/blog/about.html\">About</a>
-  <a href=\"/blog/contact.html\">Contact</a>
-</nav>
+<div class=\"header\">
+  <div class=\"sitelinks\">
+    <a href=\"/blog/index.html\">Home</a>
+    |
+    <a href=\"/blog/blog.html\">All Posts</a>
+    |
+    <a href=\"/blog/about.html\">About</a>
+    |
+    <a href=\"/blog/contact.html\">Contact</a>
+  </div>
+</div>
 </div>
 <div id=\"content\" class=\"homepage\">
 <header class=\"hero\">
@@ -162,9 +166,7 @@
   </div>
 </section>
 </div>
-<footer>
-  <p>© 2026 Liminal Desiderata · Built with <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a></p>
-</footer>
+<div id=\"postamble\" class=\"status\">Created by <a href=\"https://github.com/bastibe/org-static-blog/\">Org Static Blog</a></div>
 </body>
 </html>"))
     (with-temp-file "./public/index.html"
