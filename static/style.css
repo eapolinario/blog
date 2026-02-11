@@ -1,5 +1,37 @@
 /* Liminal Desiderata - Academic Minimal Style (inspired by dou-meishi.github.io/org-blog) */
 
+/* Theme Variables - Light Mode (default) */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #fafafa;
+  --bg-code: #fdf6e3;
+  --text-primary: #2c2c2c;
+  --text-secondary: #555555;
+  --text-tertiary: #888888;
+  --heading-color: #527d9a;
+  --link-color: #268bd2;
+  --code-color: #d33682;
+  --border-color: #e5e5e5;
+  --border-medium: #cccccc;
+}
+
+/* Dark Mode - respects system preference */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #242424;
+    --bg-code: #2a2a2a;
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --text-tertiary: #888888;
+    --heading-color: #6fa8dc;
+    --link-color: #4a9eff;
+    --code-color: #ff79c6;
+    --border-color: #3a3a3a;
+    --border-medium: #4a4a4a;
+  }
+}
+
 /* Base Reset */
 * {
   margin: 0;
@@ -11,21 +43,23 @@
 html {
   font-size: 16px;
   line-height: 1.75;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body {
   font-family: "Charter", "Georgia", "Noto Serif", serif;
-  color: #2c2c2c;
-  background-color: #ffffff;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
   margin: 0 auto;
   padding: 2rem 1.5rem;
   max-width: 950px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Headings - Serif with Solarized Blue */
 h1, h2, h3, h4, h5, h6 {
   font-family: "Lora", "Georgia", "Noto Serif", serif;
-  color: #527d9a;  /* Solarized blue */
+  color: var(--heading-color);
   font-weight: 400;
   line-height: 1.3;
   margin: 1.5em 0 0.75em;
@@ -75,7 +109,7 @@ h1.title {
 .subtitle {
   font-size: 60%;
   font-weight: 500;
-  color: #527d9a;
+  color: var(--heading-color);
 }
 
 /* Paragraph & Text */
@@ -86,8 +120,9 @@ p {
 
 /* Links */
 a {
-  color: #268bd2;  /* Solarized blue */
+  color: var(--link-color);
   text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 a:hover {
@@ -101,17 +136,17 @@ code, kbd, pre, samp {
 }
 
 :not(pre) > code {
-  color: #d33682;  /* Solarized magenta */
-  background-color: #fdf6e3;  /* Solarized light background */
+  color: var(--code-color);
+  background-color: var(--bg-code);
   padding: 0.1em 0.3em;
   border-radius: 3px;
 }
 
 pre {
-  background-color: #fdf6e3;
+  background-color: var(--bg-code);
   padding: 1rem;
   overflow-x: auto;
-  border-left: 3px solid #527d9a;
+  border-left: 3px solid var(--heading-color);
   margin: 1.5em 0;
   line-height: 1.5;
 }
@@ -125,10 +160,10 @@ pre code {
 /* Blockquotes */
 blockquote {
   font-style: italic;
-  border-left: 3px solid #cccccc;
+  border-left: 3px solid var(--border-medium);
   padding-left: 1.5rem;
   margin: 1.5em 0;
-  color: #555555;
+  color: var(--text-secondary);
 }
 
 /* Lists */
@@ -150,16 +185,16 @@ li {
 .header {
   text-align: left;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .sitelinks {
   font-size: 1rem;
-  color: #888888;
+  color: var(--text-tertiary);
 }
 
 .sitelinks a {
-  color: #888888;
+  color: var(--text-tertiary);
   text-decoration: none;
   margin: 0 0.5rem;
 }
@@ -169,19 +204,19 @@ li {
 }
 
 .sitelinks a:hover {
-  color: #527d9a;
+  color: var(--heading-color);
   text-decoration: underline;
 }
 
 nav {
   font-size: 1rem;
   padding: 1rem 0;
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid var(--border-color);
   margin-bottom: 2rem;
 }
 
 nav a {
-  color: #888888;
+  color: var(--text-tertiary);
   text-decoration: none;
   margin: 0 0.75rem;
 }
@@ -191,7 +226,7 @@ nav a:first-child {
 }
 
 nav a:hover {
-  color: #527d9a;
+  color: var(--heading-color);
   text-decoration: underline;
 }
 
@@ -206,15 +241,15 @@ article {
 }
 
 .post-title a {
-  color: #527d9a;
+  color: var(--heading-color);
 }
 
 .post-title a:hover {
-  color: #268bd2;
+  color: var(--link-color);
 }
 
 .post-date {
-  color: #888888;
+  color: var(--text-tertiary);
   font-size: 0.9rem;
   margin-bottom: 1em;
 }
@@ -227,11 +262,11 @@ article {
 .taglist {
   margin-top: 1.5em;
   font-size: 0.9rem;
-  color: #888888;
+  color: var(--text-tertiary);
 }
 
 .taglist a {
-  color: #888888;
+  color: var(--text-tertiary);
   margin: 0 0.5rem;
 }
 
@@ -240,19 +275,19 @@ article {
 }
 
 .taglist a:hover {
-  color: #527d9a;
+  color: var(--heading-color);
 }
 
 /* Archive */
 #archive {
   margin-top: 3rem;
   padding-top: 2rem;
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid var(--border-color);
   text-align: center;
 }
 
 #archive a {
-  color: #527d9a;
+  color: var(--heading-color);
   font-weight: 500;
 }
 
@@ -260,22 +295,22 @@ article {
 #postamble {
   margin-top: 4rem;
   padding-top: 2rem;
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid var(--border-color);
   text-align: center;
-  color: #888888;
+  color: var(--text-tertiary);
   font-size: 0.9rem;
 }
 
 #postamble a {
-  color: #888888;
+  color: var(--text-tertiary);
 }
 
 #postamble a:hover {
-  color: #527d9a;
+  color: var(--heading-color);
 }
 
 .status {
-  color: #888888;
+  color: var(--text-tertiary);
 }
 
 /* Homepage Styles */
@@ -288,19 +323,19 @@ article {
   text-align: left;
   padding: 4rem 0 3rem;
   margin-bottom: 3rem;
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .hero h1 {
   font-size: 3rem;
   margin: 0 0 1rem 0;
   font-variant: small-caps;
-  color: #527d9a;
+  color: var(--heading-color);
 }
 
 .hero .subtitle {
   font-size: 1.25rem;
-  color: #888888;
+  color: var(--text-tertiary);
   margin: 0;
   font-style: italic;
 }
@@ -333,13 +368,13 @@ article {
   font-size: 1rem;
   font-weight: 400;
   text-decoration: none;
-  border: 2px solid #527d9a;
+  border: 2px solid var(--heading-color);
   border-radius: 4px;
   transition: all 0.2s ease;
 }
 
 .button {
-  background-color: #527d9a;
+  background-color: var(--heading-color);
   color: white;
 }
 
@@ -351,11 +386,11 @@ article {
 
 .button-secondary {
   background-color: transparent;
-  color: #527d9a;
+  color: var(--heading-color);
 }
 
 .button-secondary:hover {
-  background-color: #527d9a;
+  background-color: var(--heading-color);
   color: white;
   text-decoration: none;
 }
@@ -365,7 +400,7 @@ article {
   font-family: "Lora", "Georgia", "Noto Serif", serif;
   margin: 2rem 0;
   padding: 1rem;
-  background-color: #fafafa;
+  background-color: var(--bg-secondary);
   border-left: 3px solid #527d9a;
 }
 
@@ -388,7 +423,7 @@ th, td {
 }
 
 th {
-  background-color: #fafafa;
+  background-color: var(--bg-secondary);
   font-weight: 600;
 }
 
@@ -403,7 +438,7 @@ img {
 /* Horizontal Rule */
 hr {
   border: none;
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid var(--border-color);
   margin: 2rem 0;
 }
 
