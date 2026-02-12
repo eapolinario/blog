@@ -1,5 +1,2 @@
-public/
-*.html
-*.xml
 .agent-shell/
 .packages/

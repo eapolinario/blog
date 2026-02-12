@@ -1,0 +1,523 @@
+/* Liminal Desiderata - Leuven Theme Colors */
+
+/* Theme Variables - Leuven Light Theme */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9f9f9;
+  --bg-code: #ffffe0;
+  --text-primary: #333333;
+  --text-secondary: #777777;
+  --text-tertiary: #999999;
+  --heading-color: #333333;
+  --link-color: #0000FF;
+  --code-color: #008000;
+  --border-color: #e0e0e0;
+  --border-medium: #c0c0c0;
+}
+
+/* Apply same theme regardless of system preference */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9f9f9;
+    --bg-code: #ffffe0;
+    --text-primary: #333333;
+    --text-secondary: #777777;
+    --text-tertiary: #999999;
+    --heading-color: #333333;
+    --link-color: #0000FF;
+    --code-color: #008000;
+    --border-color: #e0e0e0;
+    --border-medium: #c0c0c0;
+  }
+}
+
+/* Base Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Typography & Body */
+html {
+  font-size: 16px;
+  line-height: 1.75;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+  font-family: "Charter", "Georgia", "Noto Serif", serif;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  max-width: 950px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Headings - Serif with Solarized Blue */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Lora", "Georgia", "Noto Serif", serif;
+  color: var(--heading-color);
+  font-weight: 400;
+  line-height: 1.3;
+  margin: 1.5em 0 0.75em;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-variant: small-caps;
+  text-align: left;
+  margin-top: 0;
+}
+
+h2 {
+  font-size: 1.875rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+}
+
+/* Section symbols before headings */
+h2::before,
+h3::before,
+h4::before,
+h5::before,
+h6::before {
+  content: "§ ";
+  margin-right: 0.4em;
+  font-size: 70%;
+  vertical-align: top;
+  opacity: 0.7;
+}
+
+/* Special handling for h1.title */
+h1.title {
+  text-align: left;
+  font-size: 3rem;
+  font-weight: normal;
+  font-variant: small-caps;
+  margin-bottom: 2rem;
+}
+
+.subtitle {
+  font-size: 60%;
+  font-weight: 500;
+  color: var(--heading-color);
+}
+
+/* Paragraph & Text */
+p {
+  margin: 1em 0;
+  line-height: 1.75;
+}
+
+/* Links */
+a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Code */
+code, kbd, pre, samp {
+  font-family: "Fira Code", "Menlo", "Monaco", "Courier New", monospace;
+  font-size: 0.9em;
+}
+
+:not(pre) > code {
+  color: var(--code-color);
+  background-color: var(--bg-code);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+pre {
+  background-color: var(--bg-code);
+  padding: 1rem;
+  overflow-x: auto;
+  border-left: 3px solid var(--heading-color);
+  margin: 1.5em 0;
+  line-height: 1.5;
+}
+
+pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+/* Blockquotes */
+blockquote {
+  font-style: italic;
+  border-left: 3px solid var(--border-medium);
+  padding-left: 1.5rem;
+  margin: 1.5em 0;
+  color: var(--text-secondary);
+}
+
+/* Lists */
+ul, ol {
+  margin: 1em 0;
+  padding-left: 2rem;
+}
+
+li {
+  margin: 0.5em 0;
+  line-height: 1.75;
+}
+
+/* Header/Navigation */
+#preamble {
+  margin-bottom: 3rem;
+}
+
+.header {
+  text-align: left;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sitelinks {
+  font-size: 1rem;
+  color: var(--text-tertiary);
+}
+
+.sitelinks a {
+  color: var(--text-tertiary);
+  text-decoration: none;
+  margin: 0 0.5rem;
+}
+
+.sitelinks a:first-child {
+  margin-left: 0;
+}
+
+.sitelinks a:hover {
+  color: var(--heading-color);
+  text-decoration: underline;
+}
+
+nav {
+  font-size: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+}
+
+nav a {
+  color: var(--text-tertiary);
+  text-decoration: none;
+  margin: 0 0.75rem;
+}
+
+nav a:first-child {
+  margin-left: 0;
+}
+
+nav a:hover {
+  color: var(--heading-color);
+  text-decoration: underline;
+}
+
+/* Post Styles */
+article {
+  margin-bottom: 3rem;
+}
+
+.post-title {
+  margin: 1.5em 0 0.5em;
+  font-size: 1.75rem;
+}
+
+.post-title a {
+  color: var(--heading-color);
+}
+
+.post-title a:hover {
+  color: var(--link-color);
+}
+
+.post-date {
+  color: var(--text-tertiary);
+  font-size: 0.9rem;
+  margin-bottom: 1em;
+}
+
+.post-content {
+  margin-top: 1em;
+}
+
+/* Tag List */
+.taglist {
+  margin-top: 1.5em;
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
+}
+
+.taglist a {
+  color: var(--text-tertiary);
+  margin: 0 0.5rem;
+}
+
+.taglist a:first-child {
+  margin-left: 0.5rem;
+}
+
+.taglist a:hover {
+  color: var(--heading-color);
+}
+
+/* Archive */
+#archive {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}
+
+#archive a {
+  color: var(--heading-color);
+  font-weight: 500;
+}
+
+/* Footer */
+#postamble {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 0.9rem;
+}
+
+#postamble a {
+  color: var(--text-tertiary);
+}
+
+#postamble a:hover {
+  color: var(--heading-color);
+}
+
+.status {
+  color: var(--text-tertiary);
+}
+
+/* Homepage Styles */
+.homepage {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero {
+  text-align: left;
+  padding: 4rem 0 3rem;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin: 0 0 1rem 0;
+  font-variant: small-caps;
+  color: var(--heading-color);
+}
+
+.hero .subtitle {
+  font-size: 1.25rem;
+  color: var(--text-tertiary);
+  margin: 0;
+  font-style: italic;
+}
+
+.intro {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.intro p {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+.cta {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+  margin-top: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.button,
+.button-secondary {
+  display: inline-block;
+  padding: 0.75rem 1.75rem;
+  font-family: "Lora", "Georgia", serif;
+  font-size: 1rem;
+  font-weight: 400;
+  text-decoration: none;
+  border: 2px solid var(--heading-color);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.button {
+  background-color: var(--heading-color);
+  color: white;
+}
+
+.button:hover {
+  background-color: #3e6277;
+  border-color: #3e6277;
+  text-decoration: none;
+}
+
+.button-secondary {
+  background-color: transparent;
+  color: var(--heading-color);
+}
+
+.button-secondary:hover {
+  background-color: var(--heading-color);
+  color: white;
+  text-decoration: none;
+}
+
+/* Table of Contents */
+#table-of-contents {
+  font-family: "Lora", "Georgia", "Noto Serif", serif;
+  margin: 2rem 0;
+  padding: 1rem;
+  background-color: var(--bg-secondary);
+  border-left: 3px solid #527d9a;
+}
+
+#table-of-contents h2 {
+  font-size: 1.25rem;
+  margin-top: 0;
+}
+
+/* Tables */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+}
+
+th, td {
+  border: 1px solid #e5e5e5;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+th {
+  background-color: var(--bg-secondary);
+  font-weight: 600;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1.5rem auto;
+}
+
+/* Horizontal Rule */
+hr {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 2rem 0;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 960px) {
+  body {
+    max-width: 100%;
+    padding: 1.5rem 1rem;
+  }
+
+  h1.title,
+  .hero h1 {
+    font-size: 2.25rem;
+  }
+
+  h2 {
+    font-size: 1.625rem;
+  }
+
+  h3 {
+    font-size: 1.375rem;
+  }
+
+  .post-title {
+    font-size: 1.5rem;
+  }
+
+  .cta {
+    flex-direction: column;
+  }
+
+  .button,
+  .button-secondary {
+    text-align: center;
+  }
+
+  nav a,
+  .sitelinks a {
+    margin: 0 0.4rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+    color: #000;
+    background: #fff;
+    max-width: 100%;
+  }
+
+  #preamble,
+  #postamble,
+  nav,
+  .taglist,
+  #archive {
+    display: none;
+  }
+
+  a {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #000;
+  }
+
+  h2::before,
+  h3::before,
+  h4::before,
+  h5::before,
+  h6::before {
+    content: "";
+  }
+
+  pre {
+    border: 1px solid #ccc;
+    page-break-inside: avoid;
+  }
+}
