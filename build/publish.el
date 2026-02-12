@@ -112,6 +112,38 @@
 Created by <a href=\"https://orgmode.org\">Org Mode</a>
 </div>")
 
+;; Custom publishing function for hierarchical URLs
+(defun blog-publish-post-with-date-path (plist filename pub-dir)
+  "Publish post to YYYY/MM/DD/title.html structure."
+  (let* ((date (with-temp-buffer
+                 (insert-file-contents filename)
+                 (goto-char (point-min))
+                 (if (re-search-forward "^#\\+DATE: *<\\([^>]+\\)>" nil t)
+                     (date-to-time (match-string 1))
+                   (current-time))))
+         (year (format-time-string "%Y" date))
+         (month (format-time-string "%m" date))
+         (day (format-time-string "%d" date))
+         (base-name (file-name-sans-extension (file-name-nondirectory filename)))
+         ;; Extract title slug from filename (after YYYY-MM-DD-)
+         (title-slug (if (string-match "^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}-\\(.*\\)$" base-name)
+                         (match-string 1 base-name)
+                       base-name))
+         (date-dir (expand-file-name (format "%s/%s/%s" year month day) pub-dir)))
+    ;; Create directory structure
+    (make-directory date-dir t)
+    ;; Temporarily override publishing directory
+    (let ((org-publish-timestamp-directory (plist-get plist :timestamp-directory))
+          (plist (plist-put (copy-sequence plist) :publishing-directory date-dir)))
+      ;; Publish the file
+      (org-html-publish-to-html plist filename date-dir))
+    ;; Rename the output to use title slug
+    (let ((default-output (expand-file-name (concat base-name ".html") date-dir))
+          (final-output (expand-file-name (concat title-slug ".html") date-dir)))
+      (when (and (file-exists-p default-output)
+                 (not (string= default-output final-output)))
+        (rename-file default-output final-output t)))))
+
 ;; Define publishing projects
 (setq org-publish-project-alist
       `(
@@ -119,9 +151,9 @@ Created by <a href=\"https://orgmode.org\">Org Mode</a>
         ("blog-posts"
          :base-directory "./posts"
          :base-extension "org"
-         :publishing-directory "./public/posts"
+         :publishing-directory "./public"
          :recursive nil
-         :publishing-function org-html-publish-to-html
+         :publishing-function blog-publish-post-with-date-path
          :with-author t
          :with-creator nil
          :with-date t
@@ -197,6 +229,19 @@ Created by <a href=\"https://orgmode.org\">Org Mode</a>
         (split-string (match-string 1))
       nil)))
 
+;; Helper function to generate post URL from filename
+(defun blog-get-post-url (file)
+  "Generate hierarchical URL for post FILE."
+  (let* ((date (blog-get-post-date file))
+         (year (format-time-string "%Y" date))
+         (month (format-time-string "%m" date))
+         (day (format-time-string "%d" date))
+         (base-name (file-name-sans-extension (file-name-nondirectory file)))
+         (title-slug (if (string-match "^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}-\\(.*\\)$" base-name)
+                         (match-string 1 base-name)
+                       base-name)))
+    (format "%s/%s/%s/%s.html" year month day title-slug)))
+
 ;; Generate blog index (list of posts)
 (defun blog-generate-index ()
   "Generate blog index page."
@@ -219,9 +264,8 @@ Created by <a href=\"https://orgmode.org\">Org Mode</a>
       (let* ((title (blog-get-post-title post))
              (date (blog-get-post-date post))
              (tags (blog-get-post-tags post))
-             (filename (file-name-nondirectory post))
-             (html-file (concat "posts/" (file-name-sans-extension filename) ".html")))
-        (insert (format "<h2 class=\"post-title\"><a href=\"/blog/%s\">%s</a></h2>\n" html-file title))
+             (post-url (blog-get-post-url post)))
+        (insert (format "<h2 class=\"post-title\"><a href=\"/blog/%s\">%s</a></h2>\n" post-url title))
         (insert (format "<div class=\"post-date\">%s</div>\n" (format-time-string "%d %b %Y" date)))
         (when tags
           (insert "<div class=\"taglist\"><a href=\"/blog/tags.html\">Tags</a>: ")
