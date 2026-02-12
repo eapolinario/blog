@@ -12,16 +12,18 @@ build:
     export DISPLAY="${DISPLAY:-:0}"
     emacs --eval "(progn (load-file \"build/publish.el\") (kill-emacs))" 2>/dev/null
 
-# Serve the blog locally for preview
+# Serve the blog locally for preview  
 serve: build
     #!/usr/bin/env bash
-    cd public
-    # Create symlink for local development (allows /blog/ paths to work)
-    ln -sfn . blog
+    # Create a temporary directory structure to mimic GitHub Pages
+    mkdir -p /tmp/blog-preview/blog
+    cp -r public/* /tmp/blog-preview/blog/
+    cd /tmp/blog-preview
     echo "Starting local server at http://localhost:8000/blog/"
     echo "Visit: http://localhost:8000/blog/"
     echo "Press Ctrl+C to stop"
     echo ""
+    trap "rm -rf /tmp/blog-preview" EXIT
     python -m http.server 8000
 
 # Clean generated files
