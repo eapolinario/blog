@@ -26,10 +26,16 @@ jobs:
         with:
           version: 29.1
 
+      - name: Install Xvfb for graphical Emacs context
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+
       - name: Build blog
         run: |
           cd $GITHUB_WORKSPACE
-          emacs --batch -l build/publish.el
+          export DISPLAY=:99
+          Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+          sleep 2
+          emacs --eval "(progn (load-file \"build/publish.el\") (kill-emacs))"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
